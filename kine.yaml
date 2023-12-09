@@ -28,6 +28,12 @@ pipeline:
 
   - runs: |
       cd kine
+
+      # GHSA-8pgv-569h-w5rw CVE-2023-47018
+      go get go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc@v0.46.0
+      go get go.opentelemetry.io/otel/sdk@v1.21.0
+      go mod tidy
+
       ./scripts/build
       install -Dm755 ./bin/kine "${{targets.destdir}}/usr/bin/kine"
 
