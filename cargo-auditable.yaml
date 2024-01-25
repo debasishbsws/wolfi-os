@@ -1,0 +1,45 @@
+# There is an RFC for an implementation within Cargo: rust-lang/rfcs#2801
+package:
+  name: cargo-auditable
+  version: 0.6.1
+  epoch: 0
+  description: Make production Rust binaries auditable
+  copyright:
+    - license: Apache-2.0
+
+environment:
+  contents:
+    packages:
+      - build-base
+      - busybox
+      - ca-certificates-bundle
+      - rust
+
+pipeline:
+  - uses: git-checkout
+    with:
+      repository: https://github.com/rust-secure-code/cargo-auditable.git
+      tag: v${{package.version}}
+      expected-commit: 9fa7fb3988b4d2414397b9550a3f3fd1aa1bc8f2
+
+  - runs: |
+      cargo build --release
+      install -Dm755 target/release/cargo-auditable -t "${{targets.destdir}}"/usr/bin/
+
+  - uses: strip
+
+update:
+  enabled: true
+  github:
+    identifier: rust-secure-code/cargo-auditabl
+    strip-prefix: v
+
+test:
+  environment:
+    contents:
+      packages:
+        - wolfi-base
+        - rust
+  pipeline:
+    - runs: |
+        cargo auditable -V
