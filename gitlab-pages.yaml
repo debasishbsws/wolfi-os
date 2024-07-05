@@ -38,5 +38,7 @@ pipeline:
 
 update:
   enabled: true
-  release-monitor:
-    identifier: 10037
+  gitlab:
+    identifier: gitlab-org/gitlab-pages
+    strip-prefix: v
+    use-tag: true
